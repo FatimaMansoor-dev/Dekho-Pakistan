@@ -3,7 +3,7 @@ import google.generativeai as genai
 import dataset
 import subprocess
 from llama_index.llms.gemini import Gemini  # Import Gemini for text models
-from llama_index.core import StorageContext, Document
+from llama_index.core import Document
 import os
 # from fpdf import FPDF
 from fpdf import FPDF, HTMLMixin
@@ -64,13 +64,7 @@ def get_hotel_details(city, rating):
     df = df[df['hotelcity'].str.lower() == city.lower()]
     df = df[df['hotelrating'] == float(rating)]
     hotel_names_urls = df[['hotelname', 'hotelimg', 'hotelreview']].values.tolist()
-    return [{'name': name, 'img': img, 'review':review} for name, img, review in hotel_names_urls]
-
-@app.route('/execute_voicebot', methods=['POST'])
-def execute_voicebot():
-    # Execute the Python script
-    subprocess.call(['python', 'voicebot.py'])
-    return 'Voicebot executed successfully'
+    return [{'name': name, 'img': img, 'review': review} for name, img, review in hotel_names_urls]
 
 
 @app.route('/execute_generateplan', methods=['POST'])
@@ -116,26 +110,16 @@ def tourplan():
     file_path = "data/data.txt"
     documents = load_documents(file_path)
 
-    # Initialize the StorageContext and add documents
-    storage_context = StorageContext.from_defaults()
-    storage_context.docstore.add_documents(documents)
-
-    # Persist the storage context to a directory
-    PERSIST_DIR = './my_vector_indexes/gutenberg/'
-    storage_context.persist(persist_dir=PERSIST_DIR)
-
     # Querying
     query_text = f"make a travel plan for {days} days in {budget} pkr, focusing on {', '.join(interests)} for {people} people"
     response = gemini_embedding.query(query_text, documents)
     print(response)
+    
     # Convert Markdown to HTML
     response_text = str(response)
     
     # Return the HTML as a JSON object
     return jsonify({"answer": response_text})
-
-    # return (response)
-
 
 def create_pdf(html_content):
     pdf_output = 'tour_plan.pdf'
@@ -198,5 +182,6 @@ def send_email():
     except Exception as e:
         print(f'Failed to send email: {e}')
         return jsonify({'message': 'Error Sending Email'}), 500
+
 if __name__ == '__main__':
     app.run()
