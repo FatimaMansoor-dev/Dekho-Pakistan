@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
             event.preventDefault();
 
             // Get the values of city and ratings inputs
-            const city = $('#cityInput').val();
+            const city = $('#cityInput').val(); // No change here
             const ratings = $('#ratingsInput').val();
 
             // Check if city input or ratings input is empty
@@ -153,22 +153,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-
-    // document.getElementById('microphone-btn').addEventListener('click', function() {
-    //     // Make an AJAX request to execute the Python script
-    //     $.ajax({
-    //         url: '/execute_voicebot', // This should be the URL of a server route that executes the Python script
-    //         method: 'POST',
-    //         success: function(response) {
-    //             // Handle the response if needed
-    //             console.log(response);
-    //         },
-    //         error: function(xhr, status, error) {
-    //             // Handle errors
-    //             console.error(error);
-    //         }
-    //     });
-    // });
     document.getElementById('planNowBtn').addEventListener('click', async function(event) {
         event.preventDefault();
     
